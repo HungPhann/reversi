@@ -1,8 +1,8 @@
 structure Reversi_AI =
 struct
     (* ALL your code goes here, inside the structure *)
-    (* datatype player = Black | White
-    datatype move = Pass | Move of int *)
+    datatype player = Black | White
+    datatype move = Pass | Move of int
     type field = player option;
     val size = 8;
     type board = field list;
@@ -56,7 +56,7 @@ struct
                     fun is_valid_up_move' j c = if j < 0 then
                                                     false
                                                 else case (get_field board_arg j) of
-                                                    SOME(p) => if p = player_arg then
+                                                    SOME(p) => if p = opponent player_arg then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -74,7 +74,7 @@ struct
                     fun is_valid_down_move' j c = if j > 63  then
                                                     false
                                                 else case (get_field board_arg j) of
-                                                    SOME(p) => if p = player_arg then
+                                                    SOME(p) => if p = opponent player_arg then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -92,7 +92,7 @@ struct
                     fun is_valid_left_move' j c = if (i-j) > (i mod size)  then
                                                     false
                                                 else case (get_field board_arg j) of
-                                                    SOME(p) => if p = player_arg then
+                                                    SOME(p) => if p = opponent player_arg then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -109,7 +109,7 @@ struct
                     fun is_valid_right_move' j c = if (j-i + (i mod size)) >= size  then
                                                     false
                                                 else case (get_field board_arg j) of
-                                                    SOME(p) => if p = player_arg then
+                                                    SOME(p) => if p = opponent player_arg then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -148,8 +148,8 @@ struct
                                             f::(make_move' i (j+1) fs)
         in
             case move of
-            Pass => (opponent player_arg, board_arg)
-            | Move(i) => (opponent player_arg, make_move' i 0 board_arg)
+            Pass => (player_arg, board_arg)
+            | Move(i) => (player_arg, make_move' i 0 board_arg)
         end; 
 
     fun think (position, m, t) = 
@@ -163,3 +163,5 @@ struct
 
 
 end;
+
+val x = Reversi_AI.get_valid_moves (Reversi_AI.init Reversi_AI.Black);
