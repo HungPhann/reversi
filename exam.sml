@@ -2,6 +2,8 @@ structure Reversi_AI =
 struct
     (* ALL your code goes here, inside the structure *)
     
+    datatype player = Black | White;
+    datatype move = Pass | Move of int; (* 0 . . . 63 *)
     type field = player option;
     val size = 8;
     type board = field list;
@@ -145,7 +147,7 @@ struct
             | Move(i) => (opponent player_arg, make_move' i 0 board_arg)
         end; 
 
-        fun think ((position: T) (m: move) t) = (next_move position, make_move position (next_move position));
+    fun think (position, m, t) = (next_move position, make_move position (next_move position));
 
 
 
