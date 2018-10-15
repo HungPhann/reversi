@@ -1,8 +1,8 @@
 structure Reversi_AI =
 struct
     (* ALL your code goes here, inside the structure *)
-    datatype player = Black | White
-    datatype move = Pass | Move of int
+    (* datatype player = Black | White
+    datatype move = Pass | Move of int *)
     type field = player option;
     val size = 8;
     type board = field list;
@@ -164,4 +164,4 @@ struct
 
 end;
 
-val x = Reversi_AI.get_valid_moves (Reversi_AI.init Reversi_AI.Black);
+(* val x = Reversi_AI.get_valid_moves (Reversi_AI.init Reversi_AI.Black); *)
