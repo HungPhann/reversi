@@ -1,7 +1,8 @@
 structure Reversi_AI =
 struct
     (* ALL your code goes here, inside the structure *)
-    
+    (* datatype player = Black | White
+    datatype move = Pass | Move of int *)
     type field = player option;
     val size = 8;
     type board = field list;
@@ -45,17 +46,7 @@ struct
 
     val to_String = print_board (init Black) 0;  *)
 
-    exception EXCEEDBOARD;
-    fun get_field (board_arg: board) i =
-        let 
-            fun get_field' (f::fs) j = if j = i then f else get_field' fs (j+1)
-        in
-            if i < 0 orelse i > 63 then
-                raise EXCEEDBOARD
-            else 
-                get_field' board_arg 0
-        end;
-        
+    fun get_field (board_arg: board) i = List.nth (board_arg, i);
 
     fun get_valid_moves ((player_arg, board_arg): T) =
         let
@@ -65,9 +56,13 @@ struct
                     fun is_valid_up_move' j c = if j < 0 then
                                                     false
                                                 else case (get_field board_arg j) of
-                                                    player_arg => if (c > 0) then true else false
-                                                    | NONE => false 
-                                                    | _ => is_valid_up_move' (j-8) (c+1)
+                                                    SOME(p) => if p = player_arg then
+                                                                    if c > 0
+                                                                        then true
+                                                                    else false
+                                                                else
+                                                                    is_valid_up_move' (j-8) (c+1)
+                                                     | NONE => false  
                 in
                     is_valid_up_move' (i-8) 0
                 end
@@ -79,9 +74,13 @@ struct
                     fun is_valid_down_move' j c = if j > 63  then
                                                     false
                                                 else case (get_field board_arg j) of
-                                                    player_arg => if (c > 0) then true else false
-                                                    | NONE => false 
-                                                    | _ => is_valid_down_move' (j+8) (c+1)
+                                                    SOME(p) => if p = player_arg then
+                                                                    if c > 0
+                                                                        then true
+                                                                    else false
+                                                                else
+                                                                    is_valid_down_move' (j+8) (c+1)
+                                                    | NONE => false  
                 in
                     is_valid_down_move' (i+8) 0
                 end
@@ -93,9 +92,13 @@ struct
                     fun is_valid_left_move' j c = if (i-j) > (i mod size)  then
                                                     false
                                                 else case (get_field board_arg j) of
-                                                    player_arg => if (c > 0) then true else false
-                                                    | NONE => false 
-                                                    | _ => is_valid_left_move' (j-1) (c+1)
+                                                    SOME(p) => if p = player_arg then
+                                                                    if c > 0
+                                                                        then true
+                                                                    else false
+                                                                else
+                                                                    is_valid_left_move' (j-1) (c+1)
+                                                    | NONE => false
                 in
                     is_valid_left_move' (i-1) 0
                 end
@@ -106,9 +109,13 @@ struct
                     fun is_valid_right_move' j c = if (j-i + (i mod size)) >= size  then
                                                     false
                                                 else case (get_field board_arg j) of
-                                                    player_arg => if (c > 0) then true else false
-                                                    | NONE => false 
-                                                    | _ => is_valid_right_move' (j+1) (c+1)
+                                                    SOME(p) => if p = player_arg then
+                                                                    if c > 0
+                                                                        then true
+                                                                    else false
+                                                                else
+                                                                    is_valid_right_move' (j+1) (c+1)
+                                                    | NONE => false
                 in
                     is_valid_right_move' (i+1) 0
                 end
@@ -145,7 +152,13 @@ struct
             | Move(i) => (opponent player_arg, make_move' i 0 board_arg)
         end; 
 
-    fun think (position, m, t) = (next_move position, make_move position (next_move position));
+    fun think (position, m, t) = 
+        let
+            val current_position = make_move position m
+            val next_m = next_move current_position
+        in
+            (next_m, make_move current_position next_m)
+        end;
 
 
 
