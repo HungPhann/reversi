@@ -2,8 +2,6 @@ structure Reversi_AI =
 struct
     (* ALL your code goes here, inside the structure *)
     
-    datatype player = Black | White;
-    datatype move = Pass | Move of int; (* 0 . . . 63 *)
     type field = player option;
     val size = 8;
     type board = field list;
