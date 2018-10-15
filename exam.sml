@@ -163,5 +163,3 @@ struct
 
 
 end;
-
-val x = Reversi_AI.get_valid_moves (Reversi_AI.init Reversi_AI.Black);
