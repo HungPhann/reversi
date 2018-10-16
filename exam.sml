@@ -13,6 +13,7 @@ struct
     val nickname = "Hung Phan";
     
     fun player_of ((p, _) : T) = p;
+    fun board_of ((_, b): T) = b;
 
     fun opponent Black = White
         | opponent White = Black;
@@ -46,14 +47,14 @@ struct
 
     fun to_String position = print_board position 0; 
 
-    fun get_field (board_arg: board) i = List.nth (board_arg, i);
+    fun get_field (position: T) i = List.nth (board_of position, i);
 
-    fun is_valid_up_move ((player_arg, board_arg): T) i =
+    fun is_valid_up_move (position: T) i =
                 let
                     fun is_valid_up_move' j c = if j < 0 then
                                                     false
-                                                else case (get_field board_arg j) of
-                                                    SOME(p) => if p = player_arg then
+                                                else case (get_field position j) of
+                                                    SOME(p) => if p = (player_of position) then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -64,13 +65,12 @@ struct
                     is_valid_up_move' (i-8) 0
                 end;
 
-    fun is_valid_down_move ((player_arg, board_arg): T) i =
+    fun is_valid_down_move (position: T) i =
                 let
-
                     fun is_valid_down_move' j c = if j > 63  then
                                                     false
-                                                else case (get_field board_arg j) of
-                                                    SOME(p) => if p = player_arg then
+                                                else case (get_field position j) of
+                                                    SOME(p) => if p = (player_of position) then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -81,13 +81,13 @@ struct
                     is_valid_down_move' (i+8) 0
                 end;
 
-    fun is_valid_left_move ((player_arg, board_arg): T) i =
+    fun is_valid_left_move (position: T) i =
                 let
 
                     fun is_valid_left_move' j c = if (i-j) > (i mod size)  then
                                                     false
-                                                else case (get_field board_arg j) of
-                                                    SOME(p) => if p = player_arg then
+                                                else case (get_field position j) of
+                                                    SOME(p) => if p = (player_of position) then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -98,12 +98,12 @@ struct
                     is_valid_left_move' (i-1) 0
                 end;
 
-    fun is_valid_right_move ((player_arg, board_arg): T) i =
+    fun is_valid_right_move (position: T) i =
                 let
                     fun is_valid_right_move' j c = if (j-i + (i mod size)) >= size  then
                                                     false
-                                                else case (get_field board_arg j) of
-                                                    SOME(p) => if p = player_arg then
+                                                else case (get_field position j) of
+                                                    SOME(p) => if p = (player_of position) then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -114,12 +114,83 @@ struct
                     is_valid_right_move' (i+1) 0
                 end;
 
+    fun is_valid_up_left_move (position: T) i =
+                let
+                    fun is_valid_up_left_move' j c c' = if j < 0 orelse c' > (i mod size) then
+                                                    false
+                                                else case (get_field position j) of
+                                                    SOME(p) => if p = (player_of position) then
+                                                                    if c > 0
+                                                                        then true
+                                                                    else false
+                                                                else
+                                                                    is_valid_up_left_move' (j-9) (c+1) (c'+1)
+                                                    | NONE => false
+                in
+                    is_valid_up_left_move' (i-9) 0 1
+                end;
 
-    fun get_valid_moves ((player_arg, board_arg): T) =
+    fun is_valid_down_left_move (position: T) i =
+                let
+                    fun is_valid_down_left_move' j c c' = if j > 63 orelse c' > (i mod size) then
+                                                    false
+                                                else case (get_field position j) of
+                                                    SOME(p) => if p = (player_of position) then
+                                                                    if c > 0
+                                                                        then true
+                                                                    else false
+                                                                else
+                                                                    is_valid_down_left_move' (j+7) (c+1) (c'+1)
+                                                    | NONE => false
+                in
+                    is_valid_down_left_move' (i+7) 0 1
+                end;      
+
+    fun is_valid_up_right_move (position: T) i =
+                let
+                    fun is_valid_up_right_move' j c c' = if j < 0 orelse c' > (size - 1 - (i mod size)) then
+                                                    false
+                                                else case (get_field position j) of
+                                                    SOME(p) => if p = (player_of position) then
+                                                                    if c > 0
+                                                                        then true
+                                                                    else false
+                                                                else
+                                                                    is_valid_up_right_move' (j-7) (c+1) (c'+1)
+                                                    | NONE => false
+                in
+                    is_valid_up_right_move' (i-7) 0 1
+                end;     
+
+     fun is_valid_down_right_move (position: T) i =
+                let
+                    fun is_valid_down_right_move' j c c' = if j > 63 orelse c' > (size - 1 - (i mod size)) then
+                                                    false
+                                                else case (get_field position j) of
+                                                    SOME(p) => if p = (player_of position) then
+                                                                    if c > 0
+                                                                        then true
+                                                                    else false
+                                                                else
+                                                                    is_valid_down_right_move' (j+9) (c+1) (c'+1)
+                                                    | NONE => false
+                in
+                    is_valid_down_right_move' (i+9) 0 1
+                end;            
+    
+    
+    fun get_valid_moves (position: T) =
         let
             fun get_valid_moves' i = if i > 63 then
                                         []
-                                    else if (is_valid_up_move (player_arg, board_arg) i) orelse (is_valid_down_move (player_arg, board_arg) i) orelse (is_valid_left_move (player_arg, board_arg) i) orelse (is_valid_right_move (player_arg, board_arg) i) then
+                                    else if (get_field position i) = NONE andalso ((is_valid_up_move position i) 
+                                                                    orelse (is_valid_down_move position i) 
+                                                                    orelse (is_valid_left_move position i) 
+                                                                    orelse (is_valid_right_move position i)
+                                                                    orelse (is_valid_down_left_move position i)
+                                                                    orelse (is_valid_up_left_move position i)
+                                                                    orelse (is_valid_up_right_move position i)
+                                                                    orelse (is_valid_down_right_move position i)) then
                                         Move(i)::(get_valid_moves' (i+1))
                                     else
                                         get_valid_moves' (i+1)
@@ -134,80 +205,138 @@ struct
             List.hd valid_moves handle Empty => Pass
         end;
  
-    fun make_move ((player_arg, board_arg: board): T) move active_player : T =
+    fun make_move (position: T) move active_player : T =
         let
-            fun make_move' i j [] = []
-                | make_move' i j (f::fs) = if i = j then 
-                                            (SOME(active_player))::fs
-                                        else 
-                                            f::(make_move' i (j+1) fs)
+            fun make_move' _ _ [] _ = []
+                | make_move' i j (f::fs) active_player = if i = j then 
+                                                            (SOME(active_player))::fs
+                                                        else 
+                                                            f::(make_move' i (j+1) fs active_player)
             exception FLIPNONE;
 
-            fun flip_disc_up ((player_arg, board_arg: board): T) i = 
+            fun flip_disc_up (position: T) i = 
                 let
-                    fun flip_disc_up' j ((player_arg, board_arg: board): T) = case (get_field board_arg j) of
-                                                                                SOME(p) => if p = active_player then 
-                                                                                                (player_arg, board_arg)
-                                                                                            else
-                                                                                                flip_disc_up' (j-8) (player_arg, make_move' j 0 board_arg)
-                                                                                | NONE => raise FLIPNONE;                
+                    fun flip_disc_up' j (position: T) = case (get_field position j) of
+                                                            SOME(p) => if p = active_player then 
+                                                                            position
+                                                                        else
+                                                                            flip_disc_up' (j-8) (player_of position, make_move' j 0 (board_of position) active_player)
+                                                            | NONE => raise FLIPNONE;                
                 in
-                    if is_valid_up_move (player_arg, board_arg) i then
-                        flip_disc_up' (i-8) (player_arg, board_arg)
-                    else (player_arg, board_arg)
+                    if is_valid_up_move position i then
+                        flip_disc_up' (i-8) position
+                    else position
                 end;
 
-            fun flip_disc_down ((player_arg, board_arg: board): T) i =
+            fun flip_disc_down (position: T) i =
                 let
-                    fun flip_disc_down' j ((player_arg, board_arg: board): T) = case (get_field board_arg j) of
-                                                                                SOME(p) => if p = active_player then 
-                                                                                                (player_arg, board_arg)
-                                                                                            else
-                                                                                                flip_disc_down' (j+8) (player_arg, make_move' j 0 board_arg)
-                                                                                | NONE => raise FLIPNONE;                
+                    fun flip_disc_down' j (position: T) = case (get_field position j) of
+                                                                SOME(p) => if p = active_player then 
+                                                                                position
+                                                                            else
+                                                                                flip_disc_down' (j+8) (player_of position, make_move' j 0 (board_of position) active_player)
+                                                                | NONE => raise FLIPNONE;                
                 in
-                    if is_valid_down_move (player_arg, board_arg) i then
-                        flip_disc_down' (i+8) (player_arg, board_arg)
-                    else (player_arg, board_arg)
+                    if is_valid_down_move position i then
+                        flip_disc_down' (i+8) position
+                    else position
                 end;                                                           
 
-            fun flip_disc_left ((player_arg, board_arg: board): T) i =
+            fun flip_disc_left (position: T) i =
                 let
-                    fun flip_disc_left' j ((player_arg, board_arg: board): T) = case (get_field board_arg j) of
-                                                                                SOME(p) => if p = active_player then 
-                                                                                                (player_arg, board_arg)
-                                                                                            else
-                                                                                                flip_disc_left' (j-1) (player_arg, make_move' j 0 board_arg)
-                                                                                | NONE => raise FLIPNONE;                
+                    fun flip_disc_left' j (position: T) = case (get_field position j) of
+                                                                SOME(p) => if p = active_player then 
+                                                                                position
+                                                                            else
+                                                                                flip_disc_left' (j-1) (player_of position, make_move' j 0 (board_of position) active_player)
+                                                                | NONE => raise FLIPNONE;                
                 in
-                    if is_valid_left_move (player_arg, board_arg) i then
-                        flip_disc_left' (i-1) (player_arg, board_arg)
-                    else (player_arg, board_arg)                
+                    if is_valid_left_move position i then
+                        flip_disc_left' (i-1) position
+                    else position                
                 end;
 
-            fun flip_disc_right ((player_arg, board_arg: board): T) i =
+            fun flip_disc_right (position: T) i =
                 let 
-                    fun flip_disc_right' j ((player_arg, board_arg: board): T) = case (get_field board_arg j) of
-                                                                                SOME(p) => if p = active_player then 
-                                                                                                (player_arg, board_arg)
-                                                                                            else
-                                                                                                flip_disc_right' (j+1) (player_arg, make_move' j 0 board_arg)
-                                                                                | NONE => raise FLIPNONE;                 
+                    fun flip_disc_right' j (position: T) = case (get_field position j) of
+                                                                SOME(p) => if p = active_player then 
+                                                                                position
+                                                                            else
+                                                                                flip_disc_right' (j+1) (player_of position, make_move' j 0 (board_of position) active_player)
+                                                                | NONE => raise FLIPNONE;                 
                 in
-                    if is_valid_right_move (player_arg, board_arg) i then
-                        flip_disc_right' (i+1) (player_arg, board_arg)
-                    else (player_arg, board_arg)                
+                    if is_valid_right_move position i then
+                        flip_disc_right' (i+1) position
+                    else position                
                 end;
 
+            fun flip_disc_up_left (position: T) i =
+                let
+                    fun flip_disc_up_left' j (position: T) = case (get_field position j) of 
+                                                                SOME(p) => if p = active_player then
+                                                                                position
+                                                                            else flip_disc_up_left' (j-9) (player_of position, make_move' j 0 (board_of position) active_player)
+                                                                | NONE => raise FLIPNONE
+                in
+                    if is_valid_up_left_move position i then
+                        flip_disc_up_left' (i-7) position
+                    else position
+                end;
+
+            fun flip_disc_up_right (position: T) i =
+                let
+                    fun flip_disc_up_right' j (position: T) = case (get_field position j) of 
+                                                                SOME(p) => if p = active_player then
+                                                                                position
+                                                                            else flip_disc_up_right' (j-7) (player_of position, make_move' j 0 (board_of position) active_player)
+                                                                | NONE => raise FLIPNONE
+                in
+                    if is_valid_up_right_move position i then
+                        flip_disc_up_right' (i-7) position
+                    else position
+                end;    
+
+            fun flip_disc_down_right (position: T) i =
+                let
+                    fun flip_disc_down_right' j (position: T) = case (get_field position j) of 
+                                                                SOME(p) => if p = active_player then
+                                                                                position
+                                                                            else flip_disc_down_right' (j+9) (player_of position, make_move' j 0 (board_of position) active_player)
+                                                                | NONE => raise FLIPNONE
+                in
+                    if is_valid_down_right_move position i then
+                        flip_disc_down_right' (i+9) position
+                    else position
+                end;    
+
+            fun flip_disc_down_left (position: T) i =
+                let
+                    fun flip_disc_down_left' j (position: T) = case (get_field position j) of 
+                                                                SOME(p) => if p = active_player then
+                                                                                position
+                                                                            else flip_disc_down_left' (j+7) (player_of position, make_move' j 0 (board_of position) active_player)
+                                                                | NONE => raise FLIPNONE
+                in
+                    if is_valid_down_left_move position i then
+                        flip_disc_down_left' (i+9) position
+                    else position
+                end; 
                                                                        
 
-            fun final_position ((player_arg, board_arg: board): T) i = flip_disc_right (flip_disc_left (flip_disc_down (flip_disc_up (player_arg, make_move' i 0 board_arg) i) i) i) i;
-            
+            fun final_position (position: T) i = flip_disc_up_left (
+                                                flip_disc_up_right (
+                                                flip_disc_down_right (
+                                                flip_disc_down_left (
+                                                flip_disc_right (
+                                                flip_disc_left (
+                                                flip_disc_down (
+                                                flip_disc_up (player_of position, make_move' i 0 (board_of position) active_player) i) i) i) i
+                                                ) i) i) i) i;
                             
         in
             case move of
-            Pass => (player_arg, board_arg)
-            | Move(i) => final_position (player_arg, board_arg) i
+            Pass => position
+            | Move(i) => final_position position i
         end; 
 
     fun think ((player_arg, board_arg): T, m, t) = 
