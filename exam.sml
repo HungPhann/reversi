@@ -408,7 +408,7 @@ struct
             val current_position = make_move position m (opponent (player_of position))
             val next_m = next_move current_position
         in
-            (print (strBoard (board_of position) (opponent (player_of position)) m);
+            (print (strBoard (board_of current_position) (opponent (player_of position)) m);
             (next_m, make_move current_position next_m (player_of position)))
         end;
 
