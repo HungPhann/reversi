@@ -420,13 +420,13 @@ struct
 
 end;
 
-val x = Reversi_AI.init Reversi_AI.Black;
+(* val x = Reversi_AI.init Reversi_AI.Black;
 print (Reversi_AI.to_String x);
 
 Reversi_AI.get_valid_moves x;
 val m = Reversi_AI.next_move x;
 val x = Reversi_AI.make_move x m Reversi_AI.Black;
 print (Reversi_AI.to_String x);
-print (Reversi_AI.strBoard (Reversi_AI.board_of x) Reversi_AI.Black m);
+print (Reversi_AI.strBoard (Reversi_AI.board_of x) Reversi_AI.Black m); *)
 
  
