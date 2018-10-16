@@ -413,7 +413,6 @@ struct
             fun print_move (m: move) = case m of Pass => "~1" | (Move(i)) => (Int.toString i)
         in
             (
-                print("Move : " ^ print_move m);
                 print (strBoard (board_of next_position) (player_of position)  next_m);
             (next_m, next_position))
         end;
