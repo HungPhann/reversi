@@ -18,37 +18,6 @@ struct
     fun opponent Black = White
         | opponent White = Black;
 
-    fun strBoard (l: board) (p: player) (m: move) = 
-    let
-        val b = "----1--2--3--4--5--6--7--8\n"
-        fun strBoard' i [] = "\n"
-          | strBoard' i (x::xs) = 
-                let
-                    val x' = case x of
-                        NONE  => "  -"
-                      | SOME(Black)  => "  X"
-                      | SOME(White)  => "  o"  
- 
-                    val be = if (i mod 8 = 0) then (Int.toString ((i div 8) + 1)) ^ "|" else ""
-                    val en = if( (i+1) mod 8 = 0) then "\n" else ""
- 
- 
-                in
-                    be ^ x' ^ en ^ (strBoard' (i+1) xs)
-                end
- 
-        val pl = if(p=Black) then "Black 1 " else "White ~1 "
-        val made = "made move -> "
-        val m' = case m of Pass => ~1 | Move(i) => i;    
-        val m_ = Int.toString m'
-        val y = Int.toString (m' div 8 + 1)
-        val x = Int.toString (m' mod 8 + 1)
-    in
-        pl ^ made ^ m_ ^ " | " ^ y ^ " " ^ x ^ "\n" ^ b ^ strBoard' 0 l ^ "\n" ^ "\n\n"
-    end;
-
-
-
     val board_list = [  0, 0, 0, 0, 0, 0, 0, 0, 
                         0, 0, 0, 0, 0, 0, 0, 0, 
                         0, 0, 0, 0, 0, 0, 0, 0, 
@@ -73,37 +42,6 @@ struct
         in
           (player, my_board)
         end; 
-
-
-
-    (* fun init player : T =
-        let
-          fun init_board i = 
-                            if i = 64 then
-                                []
-                            else if i = 28 orelse i = 35 then
-                                SOME(Black)::(init_board (i+1))
-                            else if i = 27 orelse i = 36 then
-                                SOME(White)::(init_board (i+1))
-                            else
-                                NONE::(init_board (i+1)) 
-        in
-          (player, init_board 0)
-        end; *)
-
-    fun value_of (NONE : field) = "-"
-        | value_of (SOME(Black)) = "O"
-        | value_of (SOME(White)) = "X";
-    
-    fun print_board ((_, []): T) _ = "\n"
-        | print_board (p, f::fs) i = if i = 64 then
-                                        ""
-                                    else if (i mod size) = 7 then
-                                        (value_of f) ^ "\n" ^ (print_board (p, fs) (i+1))
-                                    else
-                                        (value_of f) ^ "  " ^ (print_board (p, fs) (i+1)) ;
-
-    fun to_String position = print_board position 0; 
 
     fun get_field (position: T) i = List.nth (board_of position, i);
 
@@ -256,17 +194,12 @@ struct
             get_valid_moves' 0
         end; 
 
-    fun print_list [] = "\n"
-      | print_list (Move(i)::xs) = Int.toString(i) ^ "  " ^ print_list xs;
-
 
     fun next_move (position: T) =
         let
             val valid_moves = get_valid_moves position
         in
-            (print("Valid moves: ");
-            print(print_list valid_moves);
-            List.hd valid_moves handle Empty => Pass)
+            List.hd valid_moves handle Empty => Pass
         end;
  
     fun make_move (position: T) m active_player : T =
@@ -408,12 +341,8 @@ struct
             val current_position = make_move position m (opponent (player_of position))
             val next_m = next_move current_position
             val next_position    = make_move current_position next_m (player_of position)
-
-            
         in
-            (   print("\n\n\n");
-                print (strBoard (board_of next_position) (player_of position)  next_m);
-            (next_m, next_position))
+            (next_m, next_position)
         end;
 
 end;
