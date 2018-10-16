@@ -18,7 +18,34 @@ struct
     fun opponent Black = White
         | opponent White = Black;
 
+    val board_list = [  0, 0, 0, 0, 0, 0, 0, 0, 
+                        0, 0, 0, 0, 0, 0, 0, 0, 
+                        0, 0, 0, 0, 0, 0, 0, 0, 
+                        0, 0, 0, ~1, 1, 0, 0, 0, 
+                        0, 0, 0, 1, ~1, 0, 0, 0, 
+                        0, 0, 0, 0, 0, 0, 0, 0, 
+                        0, 0, 0, 0, 0, 0, 0, 0, 
+                        0, 0, 0, 0, 0, 0, 0, 0];
+
+
+    fun to_board [] = []
+        | to_board (x::xs) = if x = 1 then
+                                SOME(Black)::(to_board xs)
+                            else if x = ~1 then
+                                SOME(White)::(to_board xs)
+                            else 
+                                NONE::(to_board xs);
+
     fun init player : T =
+        let
+          val my_board = to_board board_list
+        in
+          (player, my_board)
+        end; 
+
+
+
+    (* fun init player : T =
         let
           fun init_board i = 
                             if i = 64 then
@@ -31,7 +58,7 @@ struct
                                 NONE::(init_board (i+1)) 
         in
           (player, init_board 0)
-        end;
+        end; *)
 
     fun value_of (NONE : field) = "-"
         | value_of (SOME(Black)) = "O"
@@ -162,7 +189,7 @@ struct
                     is_valid_up_right_move' (i-7) 0 1
                 end;     
 
-     fun is_valid_down_right_move (position: T) i =
+    fun is_valid_down_right_move (position: T) i =
                 let
                     fun is_valid_down_right_move' j c c' = if j > 63 orelse c' > (size - 1 - (i mod size)) then
                                                     false
@@ -339,16 +366,22 @@ struct
             | Move(i) => final_position position i
         end; 
 
-    fun think ((player_arg, board_arg): T, m, t) = 
+    fun think (position: T, m, t) = 
         let
-            val current_position = make_move (player_arg, board_arg) m (opponent player_arg)
+            val current_position = make_move position m (opponent (player_of position))
             val next_m = next_move current_position
         in
-            (next_m, make_move current_position next_m player_arg)
+            (next_m, make_move current_position next_m (player_of position))
         end;
-
-
 
 end;
 
- 
+(* val x = Reversi_AI.init Reversi_AI.Black;
+print (Reversi_AI.to_String x);
+
+Reversi_AI.get_valid_moves x;
+val m = Reversi_AI.next_move x;
+val x = Reversi_AI.make_move x m Reversi_AI.Black;
+print (Reversi_AI.to_String x);
+
+  *)
