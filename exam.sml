@@ -276,7 +276,7 @@ struct
                                                             (SOME(active_player))::fs
                                                         else 
                                                             f::(make_move' i (j+1) fs active_player)
-            exception FLIPNONE;
+            exception FLIPNONE
 
             fun flip_disc_up (position: T) i = 
                 let
@@ -304,7 +304,7 @@ struct
                     if is_valid_down_move position i then
                         flip_disc_down' (i+8) position
                     else position
-                end;                                                           
+                end                                                           
 
             fun flip_disc_left (position: T) i =
                 let
@@ -407,19 +407,26 @@ struct
         let
             val current_position = make_move position m (opponent (player_of position))
             val next_m = next_move current_position
+            val next_position    = make_move current_position next_m (player_of position)
+
+            fun print_move (m: move) = case m of Pass => "~1" | (Move(i)) => (Int.toString i)
         in
-            (print (strBoard (board_of current_position) (opponent (player_of position)) m);
-            (next_m, make_move current_position next_m (player_of position)))
+            (
+                print("Move : " ^ print_move m);
+                print (strBoard (board_of current_position) (opponent (player_of position)) m);
+                print (strBoard (board_of next_position) (player_of position)  next_m);
+            (next_m, next_position))
         end;
 
 end;
 
-(* val x = Reversi_AI.init Reversi_AI.Black;
+val x = Reversi_AI.init Reversi_AI.Black;
 print (Reversi_AI.to_String x);
 
 Reversi_AI.get_valid_moves x;
 val m = Reversi_AI.next_move x;
 val x = Reversi_AI.make_move x m Reversi_AI.Black;
 print (Reversi_AI.to_String x);
+print (Reversi_AI.strBoard (Reversi_AI.board_of x) Reversi_AI.Black m);
 
-  *)
+ 
