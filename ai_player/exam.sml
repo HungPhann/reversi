@@ -1,8 +1,8 @@
 structure Reversi_AI =
 struct
     (* ALL your code goes here, inside the structure *)
-    datatype player = Black | White
-    datatype move = Pass | Move of int
+    (* datatype player = Black | White
+    datatype move = Pass | Move of int *)
     type field = player option;
     val size = 8;
     val game_tree_height = 5;
