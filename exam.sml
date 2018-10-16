@@ -401,7 +401,7 @@ struct
         in
             case m of
             Pass => position
-            | Move(i) => final_position position i
+            | Move(i) => (print ("Move: " ^ Int.toString i);final_position position i)
         end; 
 
     fun think (position: T, m, t) = 
