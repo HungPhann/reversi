@@ -225,11 +225,17 @@ struct
             get_valid_moves' 0
         end; 
 
+    fun print_list [] = "\n"
+      | print_list (Move(i)::xs) = Int.toString(i) ^ "  " ^ print_list xs;
+
+
     fun next_move (position: T) =
         let
             val valid_moves = get_valid_moves position
         in
-            List.hd valid_moves handle Empty => Pass
+            (print("Valid moves");
+            print(print_list valid_moves);
+            List.hd valid_moves handle Empty => Pass)
         end;
  
     fun make_move (position: T) move active_player : T =
