@@ -107,12 +107,12 @@ struct
 
     fun get_field (position: T) i = List.nth (board_of position, i);
 
-    fun is_valid_up_move (position: T) i =
+    fun is_valid_up_move (position: T) i active_player =
                 let
                     fun is_valid_up_move' j c = if j < 0 then
                                                     false
                                                 else case (get_field position j) of
-                                                    SOME(p) => if p = (player_of position) then
+                                                    SOME(p) => if p = active_player then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -123,12 +123,12 @@ struct
                     is_valid_up_move' (i-8) 0
                 end;
 
-    fun is_valid_down_move (position: T) i =
+    fun is_valid_down_move (position: T) i  active_player =
                 let
                     fun is_valid_down_move' j c = if j > 63  then
                                                     false
                                                 else case (get_field position j) of
-                                                    SOME(p) => if p = (player_of position) then
+                                                    SOME(p) => if p = active_player then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -139,13 +139,13 @@ struct
                     is_valid_down_move' (i+8) 0
                 end;
 
-    fun is_valid_left_move (position: T) i =
+    fun is_valid_left_move (position: T) i active_player =
                 let
 
                     fun is_valid_left_move' j c = if (i-j) > (i mod size)  then
                                                     false
                                                 else case (get_field position j) of
-                                                    SOME(p) => if p = (player_of position) then
+                                                    SOME(p) => if p = active_player then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -156,12 +156,12 @@ struct
                     is_valid_left_move' (i-1) 0
                 end;
 
-    fun is_valid_right_move (position: T) i =
+    fun is_valid_right_move (position: T) i active_player =
                 let
                     fun is_valid_right_move' j c = if (j-i + (i mod size)) >= size  then
                                                     false
                                                 else case (get_field position j) of
-                                                    SOME(p) => if p = (player_of position) then
+                                                    SOME(p) => if p = active_player then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -172,12 +172,12 @@ struct
                     is_valid_right_move' (i+1) 0
                 end;
 
-    fun is_valid_up_left_move (position: T) i =
+    fun is_valid_up_left_move (position: T) i active_player =
                 let
                     fun is_valid_up_left_move' j c c' = if j < 0 orelse c' > (i mod size) then
                                                     false
                                                 else case (get_field position j) of
-                                                    SOME(p) => if p = (player_of position) then
+                                                    SOME(p) => if p = active_player then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -188,12 +188,12 @@ struct
                     is_valid_up_left_move' (i-9) 0 1
                 end;
 
-    fun is_valid_down_left_move (position: T) i =
+    fun is_valid_down_left_move (position: T) i active_player =
                 let
                     fun is_valid_down_left_move' j c c' = if j > 63 orelse c' > (i mod size) then
                                                     false
                                                 else case (get_field position j) of
-                                                    SOME(p) => if p = (player_of position) then
+                                                    SOME(p) => if p = active_player then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -204,12 +204,12 @@ struct
                     is_valid_down_left_move' (i+7) 0 1
                 end;      
 
-    fun is_valid_up_right_move (position: T) i =
+    fun is_valid_up_right_move (position: T) i active_player =
                 let
                     fun is_valid_up_right_move' j c c' = if j < 0 orelse c' > (size - 1 - (i mod size)) then
                                                     false
                                                 else case (get_field position j) of
-                                                    SOME(p) => if p = (player_of position) then
+                                                    SOME(p) => if p = active_player then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -220,12 +220,12 @@ struct
                     is_valid_up_right_move' (i-7) 0 1
                 end;     
 
-    fun is_valid_down_right_move (position: T) i =
+    fun is_valid_down_right_move (position: T) i active_player =
                 let
                     fun is_valid_down_right_move' j c c' = if j > 63 orelse c' > (size - 1 - (i mod size)) then
                                                     false
                                                 else case (get_field position j) of
-                                                    SOME(p) => if p = (player_of position) then
+                                                    SOME(p) => if p = active_player then
                                                                     if c > 0
                                                                         then true
                                                                     else false
@@ -241,14 +241,14 @@ struct
         let
             fun get_valid_moves' i = if i > 63 then
                                         []
-                                    else if (get_field position i) = NONE andalso ((is_valid_up_move position i) 
-                                                                    orelse (is_valid_down_move position i) 
-                                                                    orelse (is_valid_left_move position i) 
-                                                                    orelse (is_valid_right_move position i)
-                                                                    orelse (is_valid_down_left_move position i)
-                                                                    orelse (is_valid_up_left_move position i)
-                                                                    orelse (is_valid_up_right_move position i)
-                                                                    orelse (is_valid_down_right_move position i)) then
+                                    else if (get_field position i) = NONE andalso ((is_valid_up_move position i (player_of position)) 
+                                                                    orelse (is_valid_down_move position i (player_of position)) 
+                                                                    orelse (is_valid_left_move position i (player_of position)) 
+                                                                    orelse (is_valid_right_move position i (player_of position))
+                                                                    orelse (is_valid_down_left_move position i (player_of position))
+                                                                    orelse (is_valid_up_left_move position i (player_of position))
+                                                                    orelse (is_valid_up_right_move position i (player_of position))
+                                                                    orelse (is_valid_down_right_move position i (player_of position))) then
                                         Move(i)::(get_valid_moves' (i+1))
                                     else
                                         get_valid_moves' (i+1)
@@ -269,7 +269,7 @@ struct
             List.hd valid_moves handle Empty => Pass)
         end;
  
-    fun make_move (position: T) move active_player : T =
+    fun make_move (position: T) m active_player : T =
         let
             fun make_move' _ _ [] _ = []
                 | make_move' i j (f::fs) active_player = if i = j then 
@@ -287,7 +287,7 @@ struct
                                                                             flip_disc_up' (j-8) (player_of position, make_move' j 0 (board_of position) active_player)
                                                             | NONE => raise FLIPNONE;                
                 in
-                    if is_valid_up_move position i then
+                    if is_valid_up_move position i active_player then
                         flip_disc_up' (i-8) position
                     else position
                 end;
@@ -301,7 +301,7 @@ struct
                                                                                 flip_disc_down' (j+8) (player_of position, make_move' j 0 (board_of position) active_player)
                                                                 | NONE => raise FLIPNONE;                
                 in
-                    if is_valid_down_move position i then
+                    if is_valid_down_move position i active_player then
                         flip_disc_down' (i+8) position
                     else position
                 end                                                           
@@ -315,7 +315,7 @@ struct
                                                                                 flip_disc_left' (j-1) (player_of position, make_move' j 0 (board_of position) active_player)
                                                                 | NONE => raise FLIPNONE;                
                 in
-                    if is_valid_left_move position i then
+                    if is_valid_left_move position i active_player then
                         flip_disc_left' (i-1) position
                     else position                
                 end;
@@ -329,7 +329,7 @@ struct
                                                                                 flip_disc_right' (j+1) (player_of position, make_move' j 0 (board_of position) active_player)
                                                                 | NONE => raise FLIPNONE;                 
                 in
-                    if is_valid_right_move position i then
+                    if is_valid_right_move position i active_player then
                         flip_disc_right' (i+1) position
                     else position                
                 end;
@@ -342,7 +342,7 @@ struct
                                                                             else flip_disc_up_left' (j-9) (player_of position, make_move' j 0 (board_of position) active_player)
                                                                 | NONE => raise FLIPNONE
                 in
-                    if is_valid_up_left_move position i then
+                    if is_valid_up_left_move position i active_player then
                         flip_disc_up_left' (i-7) position
                     else position
                 end;
@@ -355,7 +355,7 @@ struct
                                                                             else flip_disc_up_right' (j-7) (player_of position, make_move' j 0 (board_of position) active_player)
                                                                 | NONE => raise FLIPNONE
                 in
-                    if is_valid_up_right_move position i then
+                    if is_valid_up_right_move position i active_player then
                         flip_disc_up_right' (i-7) position
                     else position
                 end;    
@@ -368,7 +368,7 @@ struct
                                                                             else flip_disc_down_right' (j+9) (player_of position, make_move' j 0 (board_of position) active_player)
                                                                 | NONE => raise FLIPNONE
                 in
-                    if is_valid_down_right_move position i then
+                    if is_valid_down_right_move position i active_player then
                         flip_disc_down_right' (i+9) position
                     else position
                 end;    
@@ -381,7 +381,7 @@ struct
                                                                             else flip_disc_down_left' (j+7) (player_of position, make_move' j 0 (board_of position) active_player)
                                                                 | NONE => raise FLIPNONE
                 in
-                    if is_valid_down_left_move position i then
+                    if is_valid_down_left_move position i active_player then
                         flip_disc_down_left' (i+9) position
                     else position
                 end; 
@@ -398,7 +398,7 @@ struct
                                                 ) i) i) i) i;
                             
         in
-            case move of
+            case m of
             Pass => position
             | Move(i) => final_position position i
         end; 
