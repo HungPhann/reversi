@@ -5,7 +5,7 @@ struct
     datatype move = Pass | Move of int *)
     type field = player option;
     val size = 8;
-    val game_tree_height = 4;
+    val game_tree_height = 8;
     type board = field list;
 
     (* T = active player + boad *)
