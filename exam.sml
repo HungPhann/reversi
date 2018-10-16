@@ -288,7 +288,7 @@ struct
                                                             | NONE => ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)              
                 in
                     if is_valid_up_move position i active_player then
-                        flip_disc_up' (i-8) position
+                        (print "Flip UP\n";flip_disc_up' (i-8) position)
                     else position
                 end;
 
@@ -302,7 +302,7 @@ struct
                                                                 | NONE => ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)              
                 in
                     if is_valid_down_move position i active_player then
-                        flip_disc_down' (i+8) position
+                     (   print "Flip DOWN\n";flip_disc_down' (i+8) position)
                     else position
                 end                                                           
 
@@ -316,7 +316,7 @@ struct
                                                                 | NONE => ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)               
                 in
                     if is_valid_left_move position i active_player then
-                        flip_disc_left' (i-1) position
+                       ( print "Flip LEFT\n";flip_disc_left' (i-1) position)
                     else position                
                 end;
 
@@ -330,7 +330,7 @@ struct
                                                                 | NONE => ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)                
                 in
                     if is_valid_right_move position i active_player then
-                        flip_disc_right' (i+1) position
+                        (print "Flip RIGHT\n";flip_disc_right' (i+1) position)
                     else position                
                 end;
 
@@ -343,7 +343,7 @@ struct
                                                                 | NONE => ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)
                 in
                     if is_valid_up_left_move position i active_player then
-                        flip_disc_up_left' (i-7) position
+                       ( print "Flip UP LEFT\n";flip_disc_up_left' (i-7) position)
                     else position
                 end;
 
@@ -357,7 +357,7 @@ struct
                                                                     ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)
                 in
                     if is_valid_up_right_move position i active_player then
-                        flip_disc_up_right' (i-7) position
+                        (print "Flip UP RIGHT\n";flip_disc_up_right' (i-7) position)
                     else position
                 end;    
 
@@ -370,7 +370,7 @@ struct
                                                                 | NONE => ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)
                 in
                     if is_valid_down_right_move position i active_player then
-                        flip_disc_down_right' (i+9) position
+                        (print "Flip DOWN RIGHT\n";flip_disc_down_right' (i+9) position)
                     else position
                 end;    
 
@@ -383,7 +383,7 @@ struct
                                                                 | NONE => ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)
                 in
                     if is_valid_down_left_move position i active_player then
-                        flip_disc_down_left' (i+9) position
+                        (print "Flip DOWN LEFT\n";flip_disc_down_left' (i+9) position)
                     else position
                 end; 
                                                                        
