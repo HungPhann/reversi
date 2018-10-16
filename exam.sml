@@ -18,6 +18,37 @@ struct
     fun opponent Black = White
         | opponent White = Black;
 
+    fun strBoard (l: board) (p: player) (m: move) = 
+    let
+        val b = "----1--2--3--4--5--6--7--8\n"
+        fun strBoard' i [] = "\n"
+          | strBoard' i (x::xs) = 
+                let
+                    val x' = case x of
+                        NONE  => "  -"
+                      | SOME(Black)  => "  X"
+                      | SOME(White)  => "  o"  
+ 
+                    val be = if (i mod 8 = 0) then (Int.toString ((i div 8) + 1)) ^ "|" else ""
+                    val en = if( (i+1) mod 8 = 0) then "\n" else ""
+ 
+ 
+                in
+                    be ^ x' ^ en ^ (strBoard' (i+1) xs)
+                end
+ 
+        val pl = if(p=Black) then "Black 1 " else "White ~1 "
+        val made = "made move -> "
+        val m' = case m of Pass => ~1 | Move(i) => i;    
+        val m_ = Int.toString m'
+        val y = Int.toString (m' div 8 + 1)
+        val x = Int.toString (m' mod 8 + 1)
+    in
+        pl ^ made ^ m_ ^ " | " ^ y ^ " " ^ x ^ "\n" ^ b ^ strBoard' 0 l ^ "\n" ^ "\n\n"
+    end;
+
+
+
     val board_list = [  0, 0, 0, 0, 0, 0, 0, 0, 
                         0, 0, 0, 0, 0, 0, 0, 0, 
                         0, 0, 0, 0, 0, 0, 0, 0, 
@@ -233,7 +264,7 @@ struct
         let
             val valid_moves = get_valid_moves position
         in
-            (print("Valid moves");
+            (print("Valid moves: ");
             print(print_list valid_moves);
             List.hd valid_moves handle Empty => Pass)
         end;
@@ -377,7 +408,8 @@ struct
             val current_position = make_move position m (opponent (player_of position))
             val next_m = next_move current_position
         in
-            (next_m, make_move current_position next_m (player_of position))
+            (print (strBoard (board_of position) (opponent (player_of position)) m);
+            (next_m, make_move current_position next_m (player_of position)))
         end;
 
 end;
