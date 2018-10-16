@@ -74,7 +74,7 @@ struct
 
     fun mark_of position = 
         let
-            fun mark_of' i = if i > 64 then
+            fun mark_of' i = if i > 63 then
                                 0
                             else case (get_field position i) of
                                 SOME(p) => if p = (player_of position) then
@@ -483,5 +483,3 @@ struct
         end;
 
 end;
-
- 
