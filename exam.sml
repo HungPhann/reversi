@@ -343,7 +343,7 @@ struct
                                                                 | NONE => ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)
                 in
                     if is_valid_up_left_move position i active_player then
-                       ( print "Flip UP LEFT\n";flip_disc_up_left' (i-7) position)
+                       ( print "Flip UP LEFT\n";flip_disc_up_left' (i-9) position)
                     else position
                 end;
 
@@ -364,10 +364,10 @@ struct
             fun flip_disc_down_right (position: T) i =
                 let
                     fun flip_disc_down_right' j (position: T) = case (get_field position j) of 
-                                                                SOME(p) => if p = active_player then
-                                                                                position
-                                                                            else flip_disc_down_right' (j+9) (player_of position, make_move' j 0 (board_of position) active_player)
-                                                                | NONE => ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)
+                                                                    SOME(p) => if p = active_player then
+                                                                                    position
+                                                                                else flip_disc_down_right' (j+9) (player_of position, make_move' j 0 (board_of position) active_player)
+                                                                    | NONE => ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)
                 in
                     if is_valid_down_right_move position i active_player then
                         (print "Flip DOWN RIGHT\n";flip_disc_down_right' (i+9) position)
@@ -383,7 +383,7 @@ struct
                                                                 | NONE => ( print((Int.toString j ) ^ "\n") ;raise FLIPNONE)
                 in
                     if is_valid_down_left_move position i active_player then
-                        (print "Flip DOWN LEFT\n";flip_disc_down_left' (i+9) position)
+                        (print "Flip DOWN LEFT\n";flip_disc_down_left' (i+7) position)
                     else position
                 end; 
                                                                        
