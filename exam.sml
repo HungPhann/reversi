@@ -412,7 +412,7 @@ struct
 
             
         in
-            (   print("\n\n\n")
+            (   print("\n\n\n");
                 print (strBoard (board_of next_position) (player_of position)  next_m);
             (next_m, next_position))
         end;
