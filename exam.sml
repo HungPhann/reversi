@@ -401,7 +401,7 @@ struct
         in
             case m of
             Pass => position
-            | Move(i) => (print ("Move: " ^ Int.toString i);final_position position i)
+            | Move(i) => final_position position i
         end; 
 
     fun think (position: T, m, t) = 
@@ -410,9 +410,9 @@ struct
             val next_m = next_move current_position
             val next_position    = make_move current_position next_m (player_of position)
 
-            fun print_move (m: move) = case m of Pass => "~1" | (Move(i)) => (Int.toString i)
+            
         in
-            (
+            (   print("\n\n\n")
                 print (strBoard (board_of next_position) (player_of position)  next_m);
             (next_m, next_position))
         end;
