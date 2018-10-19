@@ -7,8 +7,6 @@ struct
     val size = 8;
     val game_tree_height = 5;
     type board = field list;
-
-    (* T = active player + boad *)
     type T = player * board;         
     val author = "Hung Phan";
     val nickname = "Hung Phan";
