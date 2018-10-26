@@ -10,6 +10,7 @@
     Each position on the board is marked with corresponding score. (Ex: Corner is important position, so it should be marked with high score)
     You can see the scores on the board in identifier "marks"
     The mark of player is equal to the difference between the mark of current player and opponent.
+    The difference between the discs of 2 player is also taken into account at the end of the game. 
     The implementation of minimax is pretty similary with the one in Tictactoe
 
     REFERENCE: http://www.samsoft.org.uk/reversi/strategy.htm
@@ -85,6 +86,85 @@ struct
                     99, ~8, 8, 6, 6, 8, ~8, 99
                 ];
 
+    (* number_of_my_field p
+    TYPE: T -> int
+    PRE:  true
+    POST: number of my discs
+    SIDE EFFECTS: side-effects free
+    EXAMPLES: number_of_my_field (init Black) = 2
+    *) 
+    fun number_of_my_field ((player_arg, board): T) = 
+                    (* number_of_my_field' p i result
+                    TYPE: T -> int -> int -> int
+                    PRE:  i=0, result=0
+                    POST: number of my discs
+                    SIDE EFFECTS: side-effects free
+                    EXAMPLES: number_of_my_field' (init Black) 0 0 = 2
+                    *) 
+                    (* INVARIANT: 64-i *)
+                let
+                    fun number_of_my_field' position i result = if i > 63  then
+                                                                    result
+                                                                else case (get_field position i) of
+                                                                    SOME(p) => if p = player_arg then
+                                                                                    number_of_my_field' position (i+1) (result+1)
+                                                                                else
+                                                                                    number_of_my_field' position (i+1) result
+                                                                    | NONE => number_of_my_field' position (i+1) result
+                in
+                    number_of_my_field' (player_arg, board) 0 0
+                end;
+
+
+    (* number_of_opponent_field p
+    TYPE: T -> int
+    PRE:  true
+    POST: number of opponent's discs
+    SIDE EFFECTS: side-effects free
+    EXAMPLES: number_of_opponent_field (init Black) = 2
+    *) 
+    fun number_of_opponent_field ((player_arg, board): T) = 
+                    (* number_of_opponent_field' p i result
+                    TYPE: T -> int -> int -> int
+                    PRE:  i=0, result=0
+                    POST: number of opponent's discs
+                    SIDE EFFECTS: side-effects free
+                    EXAMPLES: number_of_opponent_field' (init Black) 0 0 = 2
+                    *) 
+                    (* INVARIANT: 64-i *)
+                let
+                    fun number_of_opponent_field' position i result = if i > 63  then
+                                                                        result
+                                                                    else case (get_field position i) of
+                                                                        SOME(p) => if p = player_arg then
+                                                                                        number_of_opponent_field' position (i+1) result
+                                                                                    else
+                                                                                        number_of_opponent_field' position (i+1) (result+1)
+                                                                        | NONE => number_of_opponent_field' position (i+1) result
+                in
+                    number_of_opponent_field' (player_arg, board) 0 0
+                end;
+
+    (* mark_of_number_field p
+    TYPE: T -> int
+    PRE:  true
+    POST: 1000*(number of discs difference between current player and opponent) if the game is end, 0 otherwise
+    SIDE EFFECTS: side-effects free
+    EXAMPLES: mark_of_number_field (init Black) = 0
+    *) 
+    fun mark_of_number_field position = 
+        let
+            val my_field = number_of_my_field position
+            val opponent_field = number_of_opponent_field position
+            val occupied_field = my_field + opponent_field
+            val difference = my_field - opponent_field
+        in
+            if occupied_field < 64 then
+                0
+            else
+                difference*1000
+        end;
+
     (* mark_of p
     TYPE: T -> int
     PRE:  true
@@ -112,7 +192,7 @@ struct
                                                 
                                 | NONE => mark_of' (i+1)
         in
-            mark_of' 0
+            (mark_of' 0) + (mark_of_number_field position)
         end;
 
     (* to_board x
