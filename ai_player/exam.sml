@@ -1,3 +1,20 @@
+(* 
+    This is the work flow of a turn:
+    1. Receive opponent's move, then update current board.
+    2. Find all valid moves in 8 directions.
+    3. Decide next move in list of valid moves.
+    4. Mark the position on the board corresponding to next move.
+    5. Flip all possible opponent's disc in 8 directions.
+
+    To make the bot smarter, minimax alrogirhm is applied.
+    Each position on the board is marked with corresponding score. (Ex: Corner is important position, so it should be marked with high score)
+    You can see the scores on the board in identifier "marks"
+    The mark of player is equal to the difference between the mark of current player and opponent.
+    The implementation of minimax is pretty similary with the one in Tictactoe
+
+    REFERENCE: http://www.samsoft.org.uk/reversi/strategy.htm
+ *)
+
 structure Reversi_AI =
 struct
     (* ALL your code goes here, inside the structure *)
@@ -5,7 +22,7 @@ struct
     datatype move = Pass | Move of int *)
     type field = player option;
     val size = 8;
-    val game_tree_height = 5;
+    val game_tree_height = 4;
     type board = field list;
     type T = player * board;         
     val author = "Hung Phan";
@@ -757,5 +774,3 @@ struct
         end;
 
 end;
-
-(* REFERENCE: http://www.samsoft.org.uk/reversi/strategy.htm *)
